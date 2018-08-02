@@ -44,8 +44,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int PLACE_PICKER_REQUEST = 1;
     PlacePicker.IntentBuilder builder;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onStart() {
         super.onStart();
-
-
         builder = new PlacePicker.IntentBuilder();
-
-
     }
 
     @Override
@@ -142,14 +136,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
     private void getDeviceLocation(GoogleMap pMap) {
         if (mMapsController == null){
             mMapsController = new MapController(mContext, mActivity);
         }
         mLastKnownLocation = mMapsController.getDeviceLocation(pMap);
     }
-
 
     private void updateLocationUI(GoogleMap pMap){
         if (mMapsController == null){
@@ -217,5 +209,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // update the flag
         return mMapsController.isLocationPermissionGranted();
     }
-
 }

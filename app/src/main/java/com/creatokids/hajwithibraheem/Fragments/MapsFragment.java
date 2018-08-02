@@ -187,6 +187,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         }
+
+        Toast.makeText(mContext, ""+mLastKnownLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+
     }
 
     private void loadNearbyPlaces(){

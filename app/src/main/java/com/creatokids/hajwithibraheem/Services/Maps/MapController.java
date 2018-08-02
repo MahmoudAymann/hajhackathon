@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,7 +36,6 @@ import com.google.android.gms.tasks.Task;
 
 import static com.creatokids.hajwithibraheem.Global.GlobalVars.mLastKnownLocation;
 import static com.creatokids.hajwithibraheem.Global.MethodFactory.logMessage;
-
 
 public class MapController {
 
@@ -65,13 +65,13 @@ public class MapController {
     private int PROXIMITY_RADIUS = 25;
 
 
-    public MapController(Context pContext, FragmentActivity pActivity){
+    public MapController(Context pContext, FragmentActivity pActivity) {
         mContext = pContext;
         mActivity = pActivity;
         init();
     }
 
-    public void init(){
+    private void init() {
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(mContext, null);
 
@@ -111,7 +111,7 @@ public class MapController {
                 mLastKnownLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -134,9 +134,10 @@ public class MapController {
         }
     }
 
-    public void updateCurrentLocation(){
+    public void updateCurrentLocation() {
         mLastKnownLocation = getCurrentLocation();
     }
+
     public Location getDeviceLocation(GoogleMap pMap) {
         mGoogleMap = pMap;
         /*
@@ -150,15 +151,19 @@ public class MapController {
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
+
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = (Location) task.getResult();
-                            if (mLastKnownLocation == null){
+                            if (mLastKnownLocation == null) {
                                 logMessage(TAG, "locationResult.addOnCompleteListener -> mLastKnownLocation equals null");
                                 return;
                             }
+                            Toast.makeText(mContext, "hehe: "+mLastKnownLocation.getLatitude()+" "+"hehe: "+mLastKnownLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+
+                            Toast.makeText(mContext, "kjl", Toast.LENGTH_SHORT).show();
 //                            loadNearByPlaces(mLastKnownLocation.getLatitude(),
 //                                    mLastKnownLocation.getLongitude());
                         } else {
@@ -169,10 +174,10 @@ public class MapController {
                         }
                     }
                 });
-            }else {
+            } else {
                 getLocationPermission();
             }
-        } catch(SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
         return mLastKnownLocation;
@@ -198,10 +203,10 @@ public class MapController {
                         }
                     }
                 });
-            }else {
+            } else {
                 getLocationPermission();
             }
-        } catch(SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
         return mLastKnownLocation;
@@ -294,6 +299,7 @@ public class MapController {
      * Displays a form allowing the user to select a place from a list of likely places.
      */
     private void openPlacesDialog() {
+        Toast.makeText(mContext, "hehe", Toast.LENGTH_SHORT).show();
         // Ask the user to choose the place where they are now.
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
@@ -325,16 +331,20 @@ public class MapController {
                 .show();
     }
 
-    public void loadNearByPlaces(double latitude, double longitude){
+    public void loadNearByPlaces(double latitude, double longitude) {
         //YOU Can change this type at your own will, e.g hospital, cafe, restaurant.... and see how it all works
+        Toast.makeText(mContext, "lat: " + latitude + "longX: " + longitude, Toast.LENGTH_LONG).show();
+
 
         mGoogleMap.clear();
 //        Intent i = getIntent();
         String type = "hospital";
 
         StringBuilder googlePlacesUrl =
-                new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude);
+                new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=");
+        googlePlacesUrl.append(latitude)
+                .append(",")
+                .append(longitude);
         googlePlacesUrl.append("&radius=").append(PROXIMITY_RADIUS);
         googlePlacesUrl.append("&types=").append(type);
         googlePlacesUrl.append("&sensor=true");
@@ -362,7 +372,7 @@ public class MapController {
 
     }
 
-    public void loadNearByPlaces(Location location, String type){
+    public void loadNearByPlaces(Location location, String type) {
         //YOU Can change this type at your own will, e.g hospital, cafe, restaurant.... and see how it all works
 
         mGoogleMap.clear();
@@ -382,9 +392,9 @@ public class MapController {
                     @Override
                     public void onResponse(String response) {
                         logMessage(TAG, "^_^onResponse: Result= " + response);
+
                         // Here send the response where ever you want, I recommend to broadcast the
                         // result and register a receiver in the desired place
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -392,9 +402,6 @@ public class MapController {
                 logMessage(TAG, "onErrorResponse: Error= " + error.getMessage());
             }
         });
-
         queue.add(stringRequest);
-
     }
-
 }
